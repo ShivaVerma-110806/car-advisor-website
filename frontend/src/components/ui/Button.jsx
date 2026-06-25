@@ -32,10 +32,17 @@ export default function Button({
     </>
   );
 
+  const isFullWidth = className.includes("w-full");
+  const wrapperClass = isFullWidth ? "w-full" : "";
+
   if (to) {
     return (
-      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-        <Link to={to} className={classes} {...props}>
+      <motion.div 
+        whileHover={{ scale: 1.02 }} 
+        whileTap={{ scale: 0.98 }} 
+        className={wrapperClass}
+      >
+        <Link to={to} className={`${classes} ${isFullWidth ? "w-full" : ""}`} {...props}>
           {content}
         </Link>
       </motion.div>
@@ -46,9 +53,10 @@ export default function Button({
     return (
       <motion.a
         href={href}
-        className={classes}
+        className={`${classes} ${isFullWidth ? "w-full" : ""}`}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
+        style={isFullWidth ? { display: "flex" } : undefined}
         {...props}
       >
         {content}
@@ -58,7 +66,7 @@ export default function Button({
 
   return (
     <motion.button
-      className={classes}
+      className={`${classes} ${isFullWidth ? "w-full" : ""}`}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       {...props}
