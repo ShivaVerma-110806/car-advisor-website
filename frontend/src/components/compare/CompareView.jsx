@@ -1,19 +1,59 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ProgressBar from "../ui/ProgressBar";
 import GlassCard from "../ui/GlassCard";
 import CarVisual from "../ui/CarVisual";
 import Button from "../ui/Button";
 import { useCompare } from "../../context/CompareContext";
-import { getCarById, cars, COMPARE_CATEGORIES } from "../../data/cars";
+// REMOVED: Static 'cars' variable reference
+import { getCarById, getAllCars, COMPARE_CATEGORIES } from "../../data/cars";
 
 export default function CompareView() {
   const { compareList, addToCompare, removeFromCompare, clearCompare } = useCompare();
 
-  const carA = compareList[0] ? getCarById(compareList[0]) : null;
-  const carB = compareList[1] ? getCarById(compareList[1]) : null;
+  // 1. Setup local states to hold your async backend data pools safely
+  const [carA, setCarA] = useState(null);
+  const [carB, setCarB] = useState(null);
+  const [availableCars, setAvailableCars] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const availableCars = cars.filter((c) => !compareList.includes(c.id));
+  // 2. Lifecycle trigger to parse network data matching context lists
+  useEffect(() => {
+    async function populateComparisonMatrix() {
+      setLoading(true);
+      try {
+        // Fetch all inventory items for fallback selections
+        const allInventory = await getAllCars();
 
+        // Fetch targeted slots synchronously matching indices
+        const fetchA = compareList[0] ? await getCarById(compareList[0]) : null;
+        const fetchB = compareList[1] ? await getCarById(compareList[1]) : null;
+
+        setCarA(fetchA);
+        setCarB(fetchB);
+        
+        // Filter out cars already selected in comparison slots
+        setAvailableCars(allInventory.filter((c) => !compareList.includes(c.id)));
+      } catch (error) {
+        console.error("Error populating comparison elements:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    populateComparisonMatrix();
+  }, [compareList]); // Runs automatically whenever slots are chosen, added, or cleared
+
+  // 3. Render unified initial loader layout
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-24 text-center text-text-secondary">
+        Loading smart comparison matrix...
+      </div>
+    );
+  }
+
+  // 4. Case A: Both selection slots are empty
   if (!carA && !carB) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center page-enter">
@@ -26,7 +66,7 @@ export default function CompareView() {
             <GlassCard key={slot} className="p-8 border-2 border-dashed border-border">
               <p className="text-text-muted">Select Car {slot + 1}</p>
               <div className="mt-4 max-h-48 overflow-y-auto space-y-2">
-                {cars.slice(0, 4).map((car) => (
+                {availableCars.slice(0, 4).map((car) => (
                   <button
                     key={car.id}
                     onClick={() => addToCompare(car.id)}
@@ -44,6 +84,7 @@ export default function CompareView() {
     );
   }
 
+  // 5. Case B: Only one car is selected
   if (!carB) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-16 page-enter">
@@ -76,8 +117,9 @@ export default function CompareView() {
     );
   }
 
+  // 6. Case C: Both cars loaded, compile data breakdown metrics
   const winsA = COMPARE_CATEGORIES.filter(
-    (c) => carA.compareScores[c.key] >= carB.compareScores[c.key]
+    (c) => carA.compareScores?.[c.key] >= carB.compareScores?.[c.key]
   ).length;
 
   return (
@@ -120,8 +162,8 @@ export default function CompareView() {
           >
             <ProgressBar
               label={cat.label}
-              valueA={carA.compareScores[cat.key]}
-              valueB={carB.compareScores[cat.key]}
+              valueA={carA.compareScores?.[cat.key] || 0}
+              valueB={carB.compareScores?.[cat.key] || 0}
               nameA={carA.name.split(" ").slice(-1)[0]}
               nameB={carB.name.split(" ").slice(-1)[0]}
             />
@@ -135,16 +177,16 @@ export default function CompareView() {
           {winsA >= 3 ? (
             <>
               Choose <strong className="text-text-primary">{carA.name}</strong> if you prioritize comfort,{" "}
-              {COMPARE_CATEGORIES.find((c) => carA.compareScores[c.key] > carB.compareScores[c.key])?.label.toLowerCase() || "practicality"}, and overall value.
+              {COMPARE_CATEGORIES.find((c) => carA.compareScores?.[c.key] > carB.compareScores?.[c.key])?.label.toLowerCase() || "practicality"}, and overall value.
               Choose <strong className="text-text-primary">{carB.name}</strong> if technology and{" "}
-              {COMPARE_CATEGORIES.find((c) => carB.compareScores[c.key] > carA.compareScores[c.key])?.label.toLowerCase() || "performance"} matter more.
+              {COMPARE_CATEGORIES.find((c) => carB.compareScores?.[c.key] > carA.compareScores?.[c.key])?.label.toLowerCase() || "performance"} matter more.
             </>
           ) : (
             <>
               Choose <strong className="text-text-primary">{carB.name}</strong> if you prioritize{" "}
-              {COMPARE_CATEGORIES.find((c) => carB.compareScores[c.key] > carA.compareScores[c.key])?.label.toLowerCase() || "performance"} and modern features.
+              {COMPARE_CATEGORIES.find((c) => carB.compareScores?.[c.key] > carA.compareScores?.[c.key])?.label.toLowerCase() || "performance"} and modern features.
               Choose <strong className="text-text-primary">{carA.name}</strong> for better{" "}
-              {COMPARE_CATEGORIES.find((c) => carA.compareScores[c.key] > carB.compareScores[c.key])?.label.toLowerCase() || "reliability"} and lower maintenance.
+              {COMPARE_CATEGORIES.find((c) => carA.compareScores?.[c.key] > carB.compareScores?.[c.key])?.label.toLowerCase() || "reliability"} and lower maintenance.
             </>
           )}
         </p>

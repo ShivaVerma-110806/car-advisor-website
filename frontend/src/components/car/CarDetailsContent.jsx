@@ -8,6 +8,7 @@ import ScoreRing from "../ui/ScoreRing";
 import { CarCardCompact } from "../discover/CarCard";
 import { useFavorites } from "../../context/FavoritesContext";
 import { useCompare } from "../../context/CompareContext";
+// Dynamic helper data modules
 import { getCarById, getSimilarCars } from "../../data/cars";
 
 const specIcons = {
@@ -21,29 +22,38 @@ const specIcons = {
 };
 
 export default function CarDetailsContent({ carId }) {
-  const car = getCarById(carId);
   const { toggleFavorite, isFavorite } = useFavorites();
   const { addToCompare } = useCompare();
+  
+  // 1. Setup local states to securely capture asynchronous backend data
+  const [car, setCar] = useState(null);
+  const [similar, setSimilar] = useState([]);
   const [openSpec, setOpenSpec] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 2. Fetch the concrete data profiles inside the lifecycle loop
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 600);
-    return () => clearTimeout(timer);
-  }, [carId]);
+    async function loadCarDetails() {
+      setLoading(true);
+      try {
+        const fetchCar = await getCarById(carId);
+        setCar(fetchCar);
 
-  if (!car) {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-24 text-center">
-        <h1 className="text-2xl font-bold text-text-primary">Car not found</h1>
-        <Button to="/discover" className="mt-6">Back to Discover</Button>
-      </div>
-    );
-  }
+        if (fetchCar) {
+          const fetchSimilar = await getSimilarCars(carId);
+          setSimilar(fetchSimilar);
+        }
+      } catch (error) {
+        console.error("Failed to load car details matrix profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  const similar = getSimilarCars(carId);
-  const saved = isFavorite(car.id);
+    loadCarDetails();
+  }, [carId]); // Triggers fresh data loads safely whenever a different car is selected
 
+  // 3. Render loading layout if network requests are actively processing
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8">
@@ -53,6 +63,18 @@ export default function CarDetailsContent({ carId }) {
       </div>
     );
   }
+
+  // 4. Handle "Car not found" fallback securely after the loading check has resolved
+  if (!car) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-24 text-center">
+        <h1 className="text-2xl font-bold text-text-primary">Car not found</h1>
+        <Button to="/discover" className="mt-6">Back to Discover</Button>
+      </div>
+    );
+  }
+
+  const saved = isFavorite(car.id);
 
   return (
     <div className="page-enter">
@@ -203,9 +225,9 @@ export default function CarDetailsContent({ carId }) {
           <h2 className="text-2xl font-bold text-text-primary mb-6">Ownership Insights</h2>
           <div className="grid md:grid-cols-3 gap-4">
             {[
-              { label: "Service Costs", value: car.ownership.serviceCost },
-              { label: "Maintenance", value: car.ownership.maintenance },
-              { label: "Real-world Practicality", value: car.ownership.practicality },
+              { label: "Service Costs", value: car.ownership?.serviceCost },
+              { label: "Maintenance", value: car.ownership?.maintenance },
+              { label: "Real-world Practicality", value: car.ownership?.practicality },
             ].map((item) => (
               <GlassCard key={item.label} className="p-6">
                 <p className="text-sm text-text-muted">{item.label}</p>
@@ -215,7 +237,7 @@ export default function CarDetailsContent({ carId }) {
           </div>
         </motion.section>
 
-        {/* Similar */}
+        {/* Similar Alternatives */}
         <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 className="text-2xl font-bold text-text-primary mb-6">Similar Alternatives</h2>
           <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">

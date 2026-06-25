@@ -3,7 +3,7 @@ import Car from "../models/CarSchema.js";
 export const getCars = async (req, res) => {
     try {
         const cars = await Car.find()
-            .select("make model price.exShowroom images")
+            .select("brand name priceMax fuelType bodyType transmission tags image")
             .limit(10);
 
         res.status(200).json(cars);

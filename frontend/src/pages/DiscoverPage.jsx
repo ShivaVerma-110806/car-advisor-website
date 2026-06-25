@@ -3,24 +3,36 @@ import { motion } from "framer-motion";
 import CarCard from "../components/discover/CarCard";
 import FilterChips from "../components/discover/FilterChips";
 import { SkeletonGrid } from "../components/ui/SkeletonLoader";
-import { cars, FILTER_CHIPS, filterCars } from "../data/cars";
+// Import your dynamic filterCars and static chips config
+import { FILTER_CHIPS, filterCars } from "../data/cars.js"; 
 
 export default function DiscoverPage() {
   const [loading, setLoading] = useState(true);
   const [activeFilters, setActiveFilters] = useState([]);
+  const [filteredCars, setFilteredCars] = useState([]); // State to hold the backend results
 
+  // Trigger a fetch whenever activeFilters changes
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 700);
-    return () => clearTimeout(timer);
-  }, []);
+    async function fetchFilteredData() {
+      setLoading(true);
+      try {
+        const data = await filterCars(activeFilters);
+        setFilteredCars(data);
+      } catch (error) {
+        console.error("Failed to load cars matching filters:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchFilteredData();
+  }, [activeFilters]); // Runs initially and whenever a filter chip is toggled
 
   const toggleFilter = (filter) => {
     setActiveFilters((prev) =>
       prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter]
     );
   };
-
-  const filtered = filterCars(activeFilters);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 page-enter">
@@ -39,9 +51,9 @@ export default function DiscoverPage() {
 
       {loading ? (
         <SkeletonGrid count={6} />
-      ) : filtered.length > 0 ? (
+      ) : filteredCars.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((car, i) => (
+          {filteredCars.map((car, i) => (
             <CarCard key={car.id} car={car} index={i} />
           ))}
         </div>
