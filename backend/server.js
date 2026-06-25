@@ -14,10 +14,9 @@ const PORT = process.env.PORT || 5000;
 
 
 
-//MIDDLEWARES
 app.use(cors({
-    origin: 'http://localhost:5173', // Replace with your frontend URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    origin: 'https://car-advisor-website.vercel.app',
+    credentials: true
 }));
 app.use(express.json());
 

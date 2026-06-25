@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
-import { User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { User as UserIcon, LogOut, ChevronDown } from "lucide-react";
 import Button from "../ui/Button";
+import { useAuth } from "../../context/AuthContext";
 
 const navLinks = [
   { label: "Discover", path: "/discover" },
@@ -12,6 +14,8 @@ const navLinks = [
 
 export default function Navbar() {
   const location = useLocation();
+  const { user, logout } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
     <motion.header
@@ -47,9 +51,52 @@ export default function Navbar() {
           <Button to="/advisor" size="sm" className="hidden sm:inline-flex">
             Ask AI
           </Button>
-          <button className="flex h-10 w-10 items-center justify-center rounded-full glass glass-hover text-text-secondary hover:text-text-primary transition-colors">
-            <User className="h-5 w-5" />
-          </button>
+
+          {user && (
+            <div className="relative">
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full glass glass-hover text-text-secondary hover:text-text-primary transition-colors text-sm font-medium focus:outline-none"
+              >
+                <div className="h-7 w-7 rounded-full bg-accent/20 text-accent-light flex items-center justify-center font-bold text-xs uppercase">
+                  {user.name ? user.name[0] : <UserIcon className="h-3 w-3" />}
+                </div>
+                <span className="hidden sm:inline max-w-[100px] truncate">{user.name}</span>
+                <ChevronDown className="h-3 w-3 opacity-60" />
+              </button>
+
+              <AnimatePresence>
+                {dropdownOpen && (
+                  <>
+                    {/* Backdrop to dismiss menu */}
+                    <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-48 glass rounded-2xl border border-white/5 py-2 shadow-2xl z-50 origin-top-right"
+                    >
+                      <div className="px-4 py-2 border-b border-white/5">
+                        <p className="text-sm font-semibold text-text-primary truncate">{user.name}</p>
+                        <p className="text-xs text-text-muted truncate">{user.email}</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          logout();
+                        }}
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-white/5 flex items-center gap-2 transition-colors mt-1"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Log Out
+                      </button>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
         </div>
       </div>
 
