@@ -61,7 +61,7 @@ export default function Hero() {
                 </motion.div>
 
                 <motion.div
-                  className="animate-float-delayed glass rounded-2xl p-6 flex items-center gap-4 ml-8"
+                  className="animate-float-delayed glass rounded-2xl p-6 flex items-center gap-4 ml-4 sm:ml-8"
                 >
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/30 to-purple-500/30">
                     <Sparkles className="h-7 w-7 text-amber-400" />

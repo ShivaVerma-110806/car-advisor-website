@@ -127,7 +127,7 @@ export default function CarDetailsContent({ carId }) {
               const Icon = specIcons[key] || Gauge;
               const label = key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
               return (
-                <GlassCard key={key} className="p-5 text-center">
+                <GlassCard key={key} className="p-4 sm:p-5 text-center">
                   <Icon className="h-6 w-6 text-accent-light mx-auto mb-3" />
                   <p className="text-xs text-text-muted uppercase">{label}</p>
                   <p className="text-sm font-semibold text-text-primary mt-1">{value}</p>
@@ -188,9 +188,9 @@ export default function CarDetailsContent({ carId }) {
                     className="px-5 pb-5 space-y-3 border-t border-border pt-4"
                   >
                     {Object.entries(specs).map(([key, val]) => (
-                      <div key={key} className="flex justify-between text-sm">
+                      <div key={key} className="flex justify-between text-sm gap-4 py-1">
                         <span className="text-text-secondary">{key}</span>
-                        <span className="text-text-primary font-medium">{val}</span>
+                        <span className="text-text-primary font-medium text-right">{val}</span>
                       </div>
                     ))}
                   </motion.div>

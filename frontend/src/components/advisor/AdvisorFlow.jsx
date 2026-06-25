@@ -54,7 +54,7 @@ export default function AdvisorFlow() {
           Let our AI help you find the perfect car through an intelligent guided conversation. Tell us what matters to you and we'll recommend the best options.
         </p>
 
-        <GlassCard className="mt-12 p-8 text-left">
+        <GlassCard className="mt-12 p-5 sm:p-8 text-left">
           <p className="text-sm text-text-muted text-center mb-6">The AI Advisor will guide you through:</p>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
@@ -110,7 +110,7 @@ export default function AdvisorFlow() {
                 transition={{ delay: i * 0.15 }}
               >
                 <GlassCard className="overflow-hidden">
-                  <div className="grid md:grid-cols-[auto_1fr_auto] gap-6 p-6 sm:p-8">
+                  <div className="grid md:grid-cols-[auto_1fr_auto] gap-6 p-4 sm:p-8">
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-3xl font-bold text-accent-light">#{i + 1}</span>
                       <ScoreRing score={car.matchScore} size={100} strokeWidth={6} />

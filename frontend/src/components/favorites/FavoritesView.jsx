@@ -59,7 +59,7 @@ export default function FavoritesView() {
                     </div>
                   </div>
                 </div>
-                <div className="flex sm:flex-col gap-2">
+                <div className="flex flex-col gap-2 w-full sm:w-auto">
                   <Button to={`/car/${car.id}`} size="sm">View</Button>
                   <Button
                     variant="secondary"

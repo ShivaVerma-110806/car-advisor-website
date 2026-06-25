@@ -28,7 +28,7 @@ export default function Navbar() {
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-xs font-bold text-white transition-transform group-hover:scale-105">
             AI
           </div>
-          <span className="text-lg font-semibold text-text-primary">CarGenius</span>
+          <span className="text-base sm:text-lg font-semibold text-text-primary">CarGenius</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -56,7 +56,7 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full glass glass-hover text-text-secondary hover:text-text-primary transition-colors text-sm font-medium focus:outline-none"
+                className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full glass glass-hover text-text-secondary hover:text-text-primary transition-colors text-xs sm:text-sm font-medium focus:outline-none"
               >
                 <div className="h-7 w-7 rounded-full bg-accent/20 text-accent-light flex items-center justify-center font-bold text-xs uppercase">
                   {user.name ? user.name[0] : <UserIcon className="h-3 w-3" />}

@@ -32,7 +32,7 @@ export default function TrustIndicators() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
           >
-            <GlassCard hover className="p-8 h-full">
+            <GlassCard hover className="p-6 sm:p-8 h-full">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent-light mb-5">
                 <item.icon className="h-6 w-6" />
               </div>

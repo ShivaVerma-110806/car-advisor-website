@@ -44,7 +44,7 @@ export default function LoginPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md glass rounded-3xl p-8 sm:p-10 border border-white/5 relative z-10"
+        className="w-full max-w-md glass rounded-3xl p-6 sm:p-10 border border-white/5 relative z-10"
       >
         <div className="text-center mb-8">
           <motion.div 
