@@ -1,8 +1,8 @@
 import axios from "axios";
 
 
-// Live Render URL
-const API = "https://car-advisor-backend.onrender.com/api/cars";
+// Local Backend URL
+const API = "http://localhost:5000/api/cars";
 
 export const getCars = async () => {
     try {

@@ -5,7 +5,7 @@ export const search = async (req, res) => {
         const searchres = req.query.search || "";
 
         const cars = await Car.find({
-            model: {
+            name: {
                 $regex: searchres,
                 $options: "i",
             },

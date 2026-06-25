@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "https://car-advisor-backend.onrender.com/api/cars";
+const API = "http://localhost:5000/api/cars/"; // Local backend API endpoint
 
 export const getAllCars = async () => {
   try {
@@ -14,8 +14,8 @@ export const getAllCars = async () => {
 
 export const getCarById = async (id) => {
   try {
-    const cars = await getAllCars();
-    return cars.find((car) => car.id === id) || null;
+    const res = await axios.get(`${API}${id}`);
+    return res.data;
   } catch (error) {
     console.error(`Error finding car with id ${id}:`, error);
     return null;
@@ -126,8 +126,8 @@ export const ADVISOR_QUESTIONS = [
     question: "What is your budget?",
     options: [
       { label: "Under ₹10L", value: "under10" },
-      { label: "₹10–20L", value: "10to20" },
-      { label: "₹20–50L", value: "20to50" },
+      { label: "₹10 to 20L", value: "10to20" },
+      { label: "₹20 to 50L", value: "20to50" },
       { label: "Above ₹50L", value: "above50" },
     ],
   },
@@ -144,8 +144,8 @@ export const ADVISOR_QUESTIONS = [
     id: "family",
     question: "How many family members travel regularly?",
     options: [
-      { label: "1–2 people", value: "1-2" },
-      { label: "3–4 people", value: "3-4" },
+      { label: "1 to 2 people", value: "1-2" },
+      { label: "3 to 4 people", value: "3-4" },
       { label: "5+ people", value: "5+" },
     ],
   },

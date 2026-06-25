@@ -2,29 +2,33 @@ import mongoose from "mongoose";
 
 const carSchema = new mongoose.Schema(
   {
-    make: { type: String, required: true, trim: true }, // e.g., "Maruti Suzuki", "Kia"
-    model: { type: String, required: true, trim: true }, // e.g., "Grand Vitara", "Seltos"
-    variant: { type: String, required: true }, // e.g., "Delta", "HTX"
-    year: { type: Number, required: true },
-    price: {
-      exShowroom: { type: Number, required: true },
-      currency: { type: String, default: "INR" },
-    },
-    specifications: {
-      engine: { type: String, required: true },
-      fuelType: { type: String, required: true },
-      transmission: { type: String, required: true },
-      power: { type: String },
-      torque: { type: String },
-      mileage: { type: String },
-    },
-    features: { type: [String], default: [] },
-    images: { type: [String], required: true },
-    isAvailable: { type: Boolean, default: true },
+    id: { type: String, required: true },
+    brand: { type: String, required: true, trim: true },
+    name: { type: String, required: true, trim: true },
+    priceRange: { type: String },
+    priceMin: { type: Number },
+    priceMax: { type: Number },
+    bodyType: { type: String },
+    fuelType: { type: String },
+    transmission: { type: String },
+    seating: { type: String },
+    tags: { type: [String], default: [] },
+    gradient: { type: String },
+    accentColor: { type: String },
+    highlights: { type: [String], default: [] },
+    overview: { type: String },
+    keySpecs: { type: mongoose.Schema.Types.Mixed },
+    pros: { type: [String], default: [] },
+    cons: { type: [String], default: [] },
+    specifications: { type: mongoose.Schema.Types.Mixed },
+    variants: { type: [mongoose.Schema.Types.Mixed], default: [] },
+    ownership: { type: mongoose.Schema.Types.Mixed },
+    aiMatchScore: { type: Number },
+    compareScores: { type: mongoose.Schema.Types.Mixed },
   },
   {
     timestamps: true,
-    collection: "car", // Forces Mongoose to match your singular collection name in Compass
+    collection: "car",
   }
 );
 
