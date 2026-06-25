@@ -13,9 +13,9 @@ const PORT = process.env.PORT || 5000;
 
 
 
-
+console.log("DEBUG: Your DB URI is ->", process.env.MONGOOSE_URI);
 app.use(cors({
-    origin: 'https://car-advisor-website.vercel.app',
+    origin: 'https://car-advisor-website-1.onrender.com/',
     credentials: true
 }));
 app.use(express.json());
