@@ -15,7 +15,19 @@ const PORT = process.env.PORT || 5000;
 
 console.log("DEBUG: Your DB URI is ->", process.env.MONGOOSE_URI);
 app.use(cors({
-    origin: '*',
+    origin: (origin, callback) => {
+        const allowedOrigins = [
+            "https://car-advisor-website.vercel.app",
+            "http://localhost:5173",
+            "http://localhost:5174",
+            "http://localhost:5000"
+        ];
+        if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.startsWith("http://localhost:")) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true
 }));
 app.use(express.json());
