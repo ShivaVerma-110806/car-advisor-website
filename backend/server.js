@@ -17,7 +17,7 @@ console.log("DEBUG: Your DB URI is ->", process.env.MONGOOSE_URI);
 app.use(cors({
     origin: (origin, callback) => {
         const allowedOrigins = [
-            "https://car-advisor-website.vercel.app",
+            "https://car-advisor-website-1.onrender.com",
             "http://localhost:5173",
             "http://localhost:5174",
             "http://localhost:5000"
