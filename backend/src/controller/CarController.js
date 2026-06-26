@@ -4,7 +4,7 @@ export const getCars = async (req, res) => {
     try {
         const cars = await Car.find()
             .select("id brand name priceRange priceMin priceMax bodyType fuelType transmission seating tags gradient accentColor highlights compareScores")
-            .limit(10);
+            .limit(50);
 
         res.status(200).json(cars);
 
